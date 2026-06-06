@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cotizador Wansoft by Clip</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ws-bg:#f5f5f3;
+  --ws-surface:#ffffff;
+  --ws-surface2:#f9f9f8;
+  --ws-border:#e5e5e3;
+  --ws-border2:#d0d0ce;
+  --ws-orange:#ff4500;
+  --ws-orange-dim:#cc3700;
+  --ws-orange-light:#fff4f0;
+  --ws-orange-glow:rgba(255,69,0,0.10);
+  --ws-text:#111111;
+  --ws-text2:#555555;
+  --ws-text3:#999999;
+  --ws-success:#16a34a;
+  --ws-danger:#dc2626;
+  --ws-radius:10px;
+  --ws-radius-sm:6px;
+}
+body{background:var(--ws-bg);color:var(--ws-text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+.wz{max-width:940px;margin:0 auto;padding-bottom:3rem}
+
+/* Header */
+.ws-header{background:var(--ws-surface);border-bottom:1px solid var(--ws-border);padding:14px 28px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.ws-logo{display:flex;align-items:center;gap:8px}
+.ws-logo-icon{width:30px;height:30px;background:var(--ws-orange);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.ws-logo-icon svg{width:16px;height:16px;fill:#fff}
+.ws-logo-name{font-size:16px;font-weight:700;color:var(--ws-text);letter-spacing:-0.3px}
+.ws-logo-sub{font-size:11px;color:var(--ws-text3);margin-left:2px}
+.ws-doc-title{margin-left:auto;font-size:13px;color:var(--ws-text2);background:var(--ws-surface2);border:1px solid var(--ws-border);padding:4px 12px;border-radius:20px;max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Steps */
+.steps-wrap{background:var(--ws-surface);border-bottom:1px solid var(--ws-border);padding:0 28px}
+.steps{display:flex}
+.step{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 8px 14px;position:relative}
+.step::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:transparent;transition:background 0.2s}
+.step.active::after{background:var(--ws-orange)}
+.step-circle{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--ws-border2);background:var(--ws-surface2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--ws-text3);transition:all 0.2s}
+.step.active .step-circle{border-color:var(--ws-orange);background:var(--ws-orange);color:#fff}
+.step.done .step-circle{border-color:var(--ws-success);background:var(--ws-success);color:#fff}
+.step-label{font-size:11px;color:var(--ws-text3);text-align:center;font-weight:500}
+.step.active .step-label{color:var(--ws-orange);font-weight:600}
+.step.done .step-label{color:var(--ws-success)}
+
+/* Progress */
+.progress-bar{height:3px;background:var(--ws-border)}
+.progress-fill{height:100%;background:var(--ws-orange);transition:width 0.4s ease}
+
+/* Body */
+.ws-body{padding:28px}
+
+/* Cards */
+.ws-card{background:var(--ws-surface);border:1px solid var(--ws-border);border-radius:var(--ws-radius);padding:22px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.ws-card-title{font-size:11px;font-weight:700;color:var(--ws-text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--ws-border);display:flex;align-items:center;gap:8px}
+.ws-card-title i{font-size:15px;color:var(--ws-orange)}
+
+/* Fields */
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1/-1}
+label{font-size:12px;color:var(--ws-text2);font-weight:500}
+input,select{background:var(--ws-surface);border:1px solid var(--ws-border2);border-radius:var(--ws-radius-sm);color:var(--ws-text);padding:0 12px;height:38px;font-size:13px;width:100%;outline:none;transition:border-color 0.2s,box-shadow 0.2s;font-family:inherit}
+input:focus,select:focus{border-color:var(--ws-orange);box-shadow:0 0 0 3px var(--ws-orange-glow)}
+input::placeholder{color:var(--ws-text3)}
+
+/* Table */
+.ws-table{width:100%;border-collapse:collapse;font-size:12px}
+.ws-table thead tr{background:var(--ws-surface2)}
+.ws-table th{padding:9px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--ws-text3);border-bottom:1.5px solid var(--ws-border);white-space:nowrap}
+.ws-table td{padding:8px 10px;border-bottom:1px solid var(--ws-border);vertical-align:middle}
+.ws-table tr:last-child td{border-bottom:none}
+.ws-table tr.has-qty{background:var(--ws-orange-light)}
+.ws-table tr:hover td{background:#fafafa}
+.ws-table tr.has-qty:hover td{background:#fff0eb}
+.ws-table input[type=number]{width:64px;height:32px;font-size:12px;text-align:center;padding:0 6px}
+.ws-table select{height:32px;font-size:12px;padding:0 6px;width:auto;min-width:88px}
+
+/* Badges */
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:0.02em}
+.b-hw{background:#dbeafe;color:#1d4ed8}
+.b-lic{background:#dcfce7;color:#15803d}
+.b-ins{background:#ffedd5;color:#c2410c}
+.b-add{background:#ede9fe;color:#6d28d9}
+
+/* Buttons */
+.btn{padding:9px 18px;border-radius:var(--ws-radius-sm);font-size:13px;cursor:pointer;font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:all 0.15s;font-family:inherit;border:none}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.btn-primary{background:var(--ws-orange);color:#fff}
+.btn-primary:hover:not(:disabled){background:var(--ws-orange-dim)}
+.btn-ghost{background:transparent;border:1px solid var(--ws-border2);color:var(--ws-text2)}
+.btn-ghost:hover:not(:disabled){border-color:var(--ws-text2);color:var(--ws-text);background:var(--ws-surface2)}
+.btn-success{background:#16a34a;color:#fff;border:none}
+.btn-success:hover:not(:disabled){background:#15803d}
+
+/* Nav */
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:18px;border-top:1px solid var(--ws-border)}
+
+/* Metrics */
+.metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.metric{background:var(--ws-surface);border:1px solid var(--ws-border);border-radius:var(--ws-radius);padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.metric-val{font-size:22px;font-weight:700;letter-spacing:-0.5px}
+.metric-lbl{font-size:11px;color:var(--ws-text2);margin-top:3px}
+.metric.accent{border-color:var(--ws-orange);background:var(--ws-orange-light)}
+.metric.accent .metric-val{color:var(--ws-orange)}
+.metric.red .metric-val{color:var(--ws-danger)}
+
+/* Summary */
+.sum-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--ws-border);font-size:13px}
+.sum-row:last-child{border-bottom:none}
+.sum-row.total{font-size:17px;font-weight:700;padding-top:14px}
+.sum-section{font-size:10px;font-weight:700;color:var(--ws-text3);text-transform:uppercase;letter-spacing:0.08em;margin:16px 0 8px;display:flex;align-items:center;gap:6px}
+.sum-section::after{content:'';flex:1;height:1px;background:var(--ws-border)}
+.sec-total{text-align:right;font-size:12px;color:var(--ws-text2);margin-top:12px;padding-top:10px;border-top:1px dashed var(--ws-border)}
+
+/* Client highlight */
+.client-highlight{background:var(--ws-orange-light);border-left:3px solid var(--ws-orange);border-radius:0 var(--ws-radius) var(--ws-radius) 0;padding:14px 18px;margin-bottom:16px}
+
+/* Generated doc */
+.generated-doc{background:var(--ws-surface2);border:1px solid var(--ws-border);border-radius:var(--ws-radius);padding:20px;margin-top:16px;font-size:13px;line-height:1.7;white-space:pre-wrap;max-height:420px;overflow-y:auto}
+
+/* Alert */
+.alert{padding:12px 16px;border-radius:var(--ws-radius-sm);font-size:13px;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.alert-warn{background:#fffbeb;border:1px solid #fcd34d;color:#92400e}
+.alert-ok{background:#f0fdf4;border:1px solid #86efac;color:#166534}
+.alert-err{background:#fef2f2;border:1px solid #fca5a5;color:#991b1b}
+
+/* Loading spinner */
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Overflow */
+.overflow-x{overflow-x:auto}
+.empty{color:var(--ws-text3);font-size:12px;padding:8px 0}
+</style>
+</head>
+<body>
+
+<div class="wz" id="app">
+  <div class="ws-header">
+    <div class="ws-logo">
+      <div class="ws-logo-icon">
+        <svg viewBox="0 0 20 20"><path d="M3 10 L10 3 L17 10 L10 17 Z"/></svg>
+      </div>
+      <span class="ws-logo-name">Wansoft</span>
+      <span class="ws-logo-sub">by Clip</span>
+    </div>
+    <span class="ws-doc-title" id="doc-title">Nueva cotización</span>
+  </div>
+  <div class="steps-wrap"><div class="steps" id="steps-bar"></div></div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  <div class="ws-body" id="content"></div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// CONFIGURACIÓN — edita estos datos
+// ─────────────────────────────────────────────
+
+// Endpoint del proxy Netlify (no cambiar en producción)
+const API_URL = '/api/claude';
+
+// Ejecutivos del equipo comercial
+const EJECUTIVOS = [
+  { nombre: 'Ana García',     email: 'ana.garcia@wansoft.mx',     tel: '55 1234 5678' },
+  { nombre: 'Luis Torres',    email: 'luis.torres@wansoft.mx',    tel: '55 2345 6789' },
+  { nombre: 'Sofía Méndez',   email: 'sofia.mendez@wansoft.mx',   tel: '55 3456 7890' },
+  { nombre: 'Carlos Reyes',   email: 'carlos.reyes@wansoft.mx',   tel: '55 4567 8901' },
+];
+
+// Catálogo de productos con precios reales
+// Actualiza precio_lista con los valores actuales
+const CATALOG = {
+  hardware: [
+    { id:'2847', name:'Equipo AIO Pentium',        tipo:'AIO',        precio_lista: 0 },
+    { id:'2848', name:'Equipo AIO Core i3',         tipo:'AIO',        precio_lista: 0 },
+    { id:'3399', name:'MiniPC Pentium',             tipo:'MINIPC',     precio_lista: 0 },
+    { id:'2851', name:'Impresora Térmica',          tipo:'IMPRESORA',  precio_lista: 0 },
+    { id:'2841', name:'Cajón de Dinero Grande',     tipo:'ACCESORIO',  precio_lista: 0 },
+    { id:'2903', name:'Lector de Huella',           tipo:'ACCESORIO',  precio_lista: 0 },
+    { id:'2884', name:'No-Break 20 min',            tipo:'ACCESORIO',  precio_lista: 0 },
+    { id:'2874', name:'Regulador 8 Contactos',      tipo:'ACCESORIO',  precio_lista: 0 },
+    { id:'2867', name:'Switch 8 Puertos',           tipo:'RED',        precio_lista: 0 },
+    { id:'2873', name:'Router Inalámbrico',         tipo:'RED',        precio_lista: 0 },
+  ],
+  licencias: [
+    { id:'3914',  name:'Licencia Retail',                        tipo:'LICENCIA',        precio_lista: 0 },
+    { id:'3611',  name:'Licencia Básico',                        tipo:'LICENCIA',        precio_lista: 0 },
+    { id:'3411',  name:'Licencia Inventarios',                   tipo:'LICENCIA',        precio_lista: 0 },
+    { id:'3412',  name:'Licencia PRO',                           tipo:'LICENCIA',        precio_lista: 0 },
+    { id:'3911',  name:'Integración Clip',                       tipo:'PROCESAMIENTO',   precio_lista: 0 },
+    { id:'3422',  name:'Portal autoemisión + Integración PDV',   tipo:'FACTURACIÓN',     precio_lista: 0 },
+    { id:'3914b', name:'Integración DiDi',                       tipo:'ADICIÓN',         precio_lista: 0 },
+    { id:'3914c', name:'Integración Rappi',                      tipo:'ADICIÓN',         precio_lista: 0 },
+    { id:'3914d', name:'Integración Uber Eats',                  tipo:'ADICIÓN',         precio_lista: 0 },
+    { id:'3914e', name:'Integración DiDi+Rappi+Uber Eats',       tipo:'ADICIÓN',         precio_lista: 0 },
+    { id:'3914f', name:'Integración Terceros',                   tipo:'ADICIÓN',         precio_lista: 0 },
+    { id:'3914g', name:'Dark Kitchen',                           tipo:'ADICIÓN',         precio_lista: 0 },
+  ],
+  instalacion: [
+    { id:'3413', name:'Carga de Menú',              tipo:'INSTALACIÓN',  precio_lista: 0 },
+    { id:'3416', name:'Cableado',                   tipo:'INSTALACIÓN',  precio_lista: 0 },
+    { id:'3418', name:'Consultoría Inventarios',    tipo:'CONSULTORÍA',  precio_lista: 0 },
+    { id:'3415', name:'Estadía',                    tipo:'ESTADÍAS',     precio_lista: 0 },
+  ]
+};
+
+// Políticas de descuento (se envían a Claude para validación)
+const POLITICAS = `
+- Hardware: descuento máximo 15% sin autorización
+- Licencias: descuento máximo 20%, arriba requiere aprobación de gerencia
+- Instalación: descuento máximo 10%
+- Descuentos en $ fijos solo con autorización de gerente
+`;
+
+// ─────────────────────────────────────────────
+// ESTADO
+// ─────────────────────────────────────────────
+const state = {
+  step: 0,
+  datos: {
+    ejecutivoIdx: '',
+    negocio: '', titulo: '',
+    contacto: '', emailContacto: '', telContacto: '',
+    anticipo: 0
+  },
+  items: [],
+  generatedDoc: '',
+  generating: false,
+};
+
+// ─────────────────────────────────────────────
+// UTILIDADES
+// ─────────────────────────────────────────────
+const fmt = n => new Intl.NumberFormat('es-MX', {
+  style: 'currency', currency: 'MXN', minimumFractionDigits: 2
+}).format(n || 0);
+
+function calcItem(it) {
+  const sub = it.qty * it.price;
+  const disc = it.discPct > 0 ? sub * (it.discPct / 100) : (it.discAmt || 0);
+  return { sub, disc, final: sub - disc };
+}
+
+function totals() {
+  let inv = 0, renta = 0, anual = 0, totalDesc = 0;
+  state.items.forEach(it => {
+    const { final, disc } = calcItem(it);
+    totalDesc += disc;
+    if (it.section === 'hardware' || it.section === 'instalacion') inv += final;
+    else if (it.billing === 'mensual') renta += final;
+    else anual += final;
+  });
+  return { inv, renta, anual, totalDesc, grand: inv + renta + anual };
+}
+
+function getEjecutivo() {
+  const idx = parseInt(state.datos.ejecutivoIdx);
+  return isNaN(idx) ? null : EJECUTIVOS[idx];
+}
+
+// ─────────────────────────────────────────────
+// RENDER: STEPS + PROGRESS
+// ─────────────────────────────────────────────
+const STEPS = ['Datos', 'Hardware', 'Licencias', 'Instalación', 'Resumen'];
+
+function renderSteps() {
+  document.getElementById('steps-bar').innerHTML = STEPS.map((s, i) => `
+    <div class="step ${i === state.step ? 'active' : i < state.step ? 'done' : ''}">
+      <div class="step-circle">${i < state.step ? '✓' : i + 1}</div>
+      <div class="step-label">${s}</div>
+    </div>`).join('');
+  document.getElementById('progress-fill').style.width = (state.step / 4 * 100) + '%';
+}
+
+// ─────────────────────────────────────────────
+// RENDER: CONTENIDO POR PASO
+// ─────────────────────────────────────────────
+function renderContent() {
+  const el = document.getElementById('content');
+  if (state.step === 0) el.innerHTML = renderDatos();
+  else if (state.step === 1) el.innerHTML = renderProductos('hardware');
+  else if (state.step === 2) el.innerHTML = renderProductos('licencias');
+  else if (state.step === 3) el.innerHTML = renderProductos('instalacion');
+  else el.innerHTML = renderResumen();
+}
+
+// PASO 1: Datos generales
+function renderDatos() {
+  const d = state.datos;
+  const ejOptions = EJECUTIVOS.map((e, i) =>
+    `<option value="${i}" ${d.ejecutivoIdx == i ? 'selected' : ''}>${e.nombre}</option>`
+  ).join('');
+
+  return `
+  <div class="ws-card">
+    <div class="ws-card-title"><i class="ti ti-user-circle"></i>Ejecutivo comercial</div>
+    <div class="field-grid">
+      <div class="field full">
+        <label>Selecciona el ejecutivo</label>
+        <select id="ejecutivoIdx" onchange="onEjecutivoChange(this.value)">
+          <option value="">— Selecciona —</option>
+          ${ejOptions}
+        </select>
+      </div>
+      <div class="field"><label>eMail</label>
+        <input id="emailEjecutivo" value="${d.ejecutivoIdx !== '' ? EJECUTIVOS[d.ejecutivoIdx].email : ''}" readonly style="background:var(--ws-surface2);color:var(--ws-text2)">
+      </div>
+      <div class="field"><label>Teléfono</label>
+        <input id="telEjecutivo" value="${d.ejecutivoIdx !== '' ? EJECUTIVOS[d.ejecutivoIdx].tel : ''}" readonly style="background:var(--ws-surface2);color:var(--ws-text2)">
+      </div>
+    </div>
+  </div>
+  <div class="ws-card">
+    <div class="ws-card-title"><i class="ti ti-building-store"></i>Datos del cliente</div>
+    <div class="field-grid">
+      <div class="field full"><label>Nombre del negocio</label>
+        <input id="negocio" value="${d.negocio}" placeholder="Ej. Restaurante La Paloma">
+      </div>
+      <div class="field full"><label>Título de la cotización</label>
+        <input id="titulo" value="${d.titulo}" placeholder="Ej. Cotización sistema punto de venta">
+      </div>
+      <div class="field"><label>Nombre del contacto principal</label>
+        <input id="contacto" value="${d.contacto}" placeholder="Nombre completo">
+      </div>
+      <div class="field"><label>eMail contacto principal</label>
+        <input id="emailContacto" type="email" value="${d.emailContacto}" placeholder="contacto@negocio.com">
+      </div>
+      <div class="field"><label>Teléfono contacto principal</label>
+        <input id="telContacto" value="${d.telContacto}" placeholder="55 9876 5432">
+      </div>
+      <div class="field"><label>Anticipo acordado (%)</label>
+        <input id="anticipo" type="number" min="0" max="100" value="${d.anticipo}" placeholder="0">
+      </div>
+    </div>
+  </div>
+  <div class="nav">
+    <span style="font-size:12px;color:var(--ws-text3)">Paso 1 de 5</span>
+    <button class="btn btn-primary" onclick="nextStep()">
+      Continuar — Hardware <i class="ti ti-arrow-right"></i>
+    </button>
+  </div>`;
+}
+
+function onEjecutivoChange(idx) {
+  state.datos.ejecutivoIdx = idx;
+  if (idx !== '') {
+    const e = EJECUTIVOS[idx];
+    document.getElementById('emailEjecutivo').value = e.email;
+    document.getElementById('telEjecutivo').value = e.tel;
+  }
+}
+
+// PASOS 2-4: Productos por sección
+const sectionMeta = {
+  hardware:   { title: 'Equipo de cómputo',     icon: 'ti-device-desktop', badge: 'b-hw',  billing: false },
+  licencias:  { title: 'Licencias & Software',  icon: 'ti-license',        badge: 'b-lic', billing: true  },
+  instalacion:{ title: 'Instalación & Servicios',icon: 'ti-tools',         badge: 'b-ins', billing: false },
+};
+const stepNums   = { hardware: 2, licencias: 3, instalacion: 4 };
+const nextLabels = { hardware: 'Continuar — Licencias', licencias: 'Continuar — Instalación', instalacion: 'Ver Resumen' };
+
+function renderProductos(section) {
+  const meta = sectionMeta[section];
+  const cat  = CATALOG[section];
+  const added = state.items.filter(i => i.section === section);
+  const secTotal = added.reduce((a, i) => a + calcItem(i).final, 0);
+  const secDisc  = added.reduce((a, i) => a + calcItem(i).disc, 0);
+
+  const rows = cat.map(p => {
+    const it      = state.items.find(i => i.id === p.id);
+    const qty     = it ? it.qty     : 0;
+    const price   = it ? it.price   : p.precio_lista;
+    const discPct = it ? it.discPct : 0;
+    const billing = it ? it.billing : 'mensual';
+    const { sub, disc, final } = it ? calcItem(it) : { sub: 0, disc: 0, final: 0 };
+
+    const billingCell = meta.billing
+      ? `<td><select onchange="updItem('${p.id}','billing',this.value,'${section}','${p.name}')">
+           <option value="mensual"${billing === 'mensual' ? ' selected' : ''}>Mensual</option>
+           <option value="anual"${billing === 'anual' ? ' selected' : ''}>Anual</option>
+         </select></td>`
+      : `<td style="color:var(--ws-text3);font-size:11px">—</td>`;
+
+    return `<tr class="${qty > 0 ? 'has-qty' : ''}">
+      <td><input type="number" min="0" value="${qty}"
+          onchange="updItem('${p.id}','qty',+this.value,'${section}','${p.name}')"></td>
+      <td>
+        <div style="font-weight:600;font-size:13px">${p.name}</div>
+        <div style="margin-top:3px">
+          <span class="badge ${meta.badge}">${p.tipo}</span>
+          <span style="font-size:10px;color:var(--ws-text3);margin-left:6px">${p.id}</span>
+        </div>
+      </td>
+      <td><input type="number" min="0" value="${price}"
+          onchange="updItem('${p.id}','price',+this.value,'${section}','${p.name}')"
+          style="width:90px"></td>
+      ${billingCell}
+      <td style="color:var(--ws-text2)">${qty > 0 ? fmt(sub) : '—'}</td>
+      <td style="white-space:nowrap">
+        <input type="number" min="0" max="100" value="${discPct}" style="width:52px"
+          onchange="updItem('${p.id}','discPct',+this.value,'${section}','${p.name}')">
+        <span style="color:var(--ws-text3)">%</span>
+      </td>
+      <td style="color:${disc > 0 ? 'var(--ws-danger)' : 'var(--ws-text3)'}">
+        ${disc > 0 ? '-' + fmt(disc) : '—'}
+      </td>
+      <td style="font-weight:700;color:${final > 0 ? 'var(--ws-text)' : 'var(--ws-text3)'}">
+        ${final > 0 ? fmt(final) : '—'}
+      </td>
+    </tr>`;
+  }).join('');
+
+  return `
+  <div class="ws-card">
+    <div class="ws-card-title"><i class="ti ${meta.icon}"></i>${meta.title}</div>
+    <div class="overflow-x">
+      <table class="ws-table">
+        <thead><tr>
+          <th style="width:64px">Cant.</th>
+          <th>Producto / Servicio</th>
+          <th style="width:100px">Precio lista</th>
+          <th style="width:96px">${meta.billing ? 'Cobro' : 'Tipo'}</th>
+          <th style="width:96px">Subtotal</th>
+          <th style="width:84px">% Desc</th>
+          <th style="width:96px">$ Desc</th>
+          <th style="width:106px">Precio final</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div class="sec-total">
+      ${added.length > 0
+        ? `${added.length} producto${added.length > 1 ? 's' : ''} &nbsp;·&nbsp;
+           Descuentos: <span style="color:var(--ws-danger)">-${fmt(secDisc)}</span> &nbsp;·&nbsp;
+           Total sección: <strong style="color:var(--ws-orange)">${fmt(secTotal)}</strong>`
+        : `<span style="color:var(--ws-text3)">Sin productos en esta sección</span>`}
+    </div>
+  </div>
+  <div class="nav">
+    <button class="btn btn-ghost" onclick="prevStep()">
+      <i class="ti ti-arrow-left"></i> Atrás
+    </button>
+    <span style="font-size:12px;color:var(--ws-text3)">Paso ${stepNums[section]} de 5</span>
+    <button class="btn btn-primary" onclick="nextStep()">
+      ${nextLabels[section]} <i class="ti ti-arrow-right"></i>
+    </button>
+  </div>`;
+}
+
+// PASO 5: Resumen + generación con Claude
+function renderResumen() {
+  const d   = state.datos;
+  const t   = totals();
+  const ej  = getEjecutivo();
+  const hw  = state.items.filter(i => i.section === 'hardware');
+  const lic = state.items.filter(i => i.section === 'licencias');
+  const ins = state.items.filter(i => i.section === 'instalacion');
+  const anticipo = t.grand * (d.anticipo / 100);
+
+  function secRows(items) {
+    if (!items.length) return `<div class="empty">Sin productos seleccionados</div>`;
+    return items.map(it => {
+      const { disc, final } = calcItem(it);
+      return `<div class="sum-row">
+        <span style="color:var(--ws-text2)">
+          <strong style="color:var(--ws-text)">${it.qty}×</strong> ${it.name}
+          ${it.billing ? `<span style="font-size:10px;color:var(--ws-text3);background:var(--ws-surface2);
+            padding:1px 6px;border-radius:10px;border:1px solid var(--ws-border)">${it.billing}</span>` : ''}
+        </span>
+        <span style="display:flex;gap:14px;align-items:center">
+          ${disc > 0 ? `<span style="color:var(--ws-danger);font-size:11px">-${fmt(disc)}</span>` : ''}
+          <span style="font-weight:600">${fmt(final)}</span>
+        </span>
+      </div>`;
+    }).join('');
+  }
+
+  const genBtn = state.generating
+    ? `<button class="btn btn-success" disabled>
+         <span class="spinner"></span> Generando cotización...
+       </button>`
+    : `<button class="btn btn-success" onclick="generarCotizacion()">
+         <i class="ti ti-sparkles"></i> Generar cotización formal con IA
+       </button>`;
+
+  const docSection = state.generatedDoc
+    ? `<div class="ws-card">
+         <div class="ws-card-title"><i class="ti ti-file-text"></i>Cotización generada</div>
+         <div class="alert alert-ok">
+           <i class="ti ti-circle-check"></i>
+           Cotización lista — copia el texto o usa Ctrl+P para imprimir como PDF
+         </div>
+         <div class="generated-doc" id="generated-doc">${escapeHtml(state.generatedDoc)}</div>
+         <div style="display:flex;gap:8px;margin-top:12px">
+           <button class="btn btn-ghost" onclick="copyDoc()">
+             <i class="ti ti-copy"></i> Copiar texto
+           </button>
+           <button class="btn btn-ghost" onclick="window.print()">
+             <i class="ti ti-printer"></i> Imprimir / PDF
+           </button>
+         </div>
+       </div>`
+    : '';
+
+  return `
+  <div class="metrics-grid">
+    <div class="metric accent">
+      <div class="metric-val">${fmt(t.inv)}</div>
+      <div class="metric-lbl">Inversión inicial</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val">${fmt(t.renta)}</div>
+      <div class="metric-lbl">Renta mensual</div>
+    </div>
+    <div class="metric red">
+      <div class="metric-val" style="color:var(--ws-danger)">-${fmt(t.totalDesc)}</div>
+      <div class="metric-lbl">Descuentos totales</div>
+    </div>
+  </div>
+
+  ${d.negocio || d.titulo ? `
+  <div class="client-highlight">
+    <div style="font-size:15px;font-weight:700">${d.titulo || 'Sin título'}</div>
+    <div style="font-size:12px;color:var(--ws-text2);margin-top:4px">
+      ${d.negocio} · ${d.contacto || 'Sin contacto'} · ${d.emailContacto || ''}
+    </div>
+    <div style="font-size:12px;color:var(--ws-text3);margin-top:2px">
+      Ejecutivo: ${ej ? ej.nombre : '—'} &nbsp;·&nbsp; Anticipo: ${d.anticipo}%
+    </div>
+  </div>` : ''}
+
+  <div class="ws-card">
+    <div class="ws-card-title"><i class="ti ti-list-details"></i>Desglose por sección</div>
+    <div class="sum-section">1. Equipo de cómputo</div>${secRows(hw)}
+    <div class="sum-section">2. Licencias & Software</div>${secRows(lic)}
+    <div class="sum-section">3. Instalación & Servicios</div>${secRows(ins)}
+  </div>
+
+  <div class="ws-card">
+    <div class="ws-card-title"><i class="ti ti-receipt"></i>Resumen cotización</div>
+    <div class="sum-row">
+      <span style="color:var(--ws-text2)">Inversión inicial (hardware + instalación)</span>
+      <span>${fmt(t.inv)}</span>
+    </div>
+    <div class="sum-row">
+      <span style="color:var(--ws-text2)">Renta mensual</span>
+      <span>${fmt(t.renta)}</span>
+    </div>
+    ${t.anual > 0 ? `<div class="sum-row">
+      <span style="color:var(--ws-text2)">Cargos anuales</span>
+      <span>${fmt(t.anual)}</span>
+    </div>` : ''}
+    <div class="sum-row">
+      <span style="color:var(--ws-danger)">Total descuentos acumulados</span>
+      <span style="color:var(--ws-danger)">-${fmt(t.totalDesc)}</span>
+    </div>
+    ${d.anticipo > 0 ? `<div class="sum-row">
+      <span style="color:var(--ws-text2)">Anticipo acordado (${d.anticipo}%)</span>
+      <span style="color:var(--ws-orange);font-weight:600">${fmt(anticipo)}</span>
+    </div>` : ''}
+    <div class="sum-row total" style="border-top:2px solid var(--ws-border);margin-top:8px">
+      <span>Total cotización</span>
+      <span style="font-size:22px;color:var(--ws-orange)">${fmt(t.grand)}</span>
+    </div>
+  </div>
+
+  <div class="ws-card">
+    <div class="ws-card-title"><i class="ti ti-sparkles"></i>Cotización formal</div>
+    <p style="font-size:13px;color:var(--ws-text2);margin-bottom:14px">
+      Genera el documento formal listo para enviar al cliente, con tabla de productos,
+      condiciones comerciales y datos de contacto.
+    </p>
+    ${genBtn}
+  </div>
+
+  ${docSection}
+
+  <div class="nav">
+    <button class="btn btn-ghost" onclick="prevStep()">
+      <i class="ti ti-arrow-left"></i> Atrás
+    </button>
+    <button class="btn btn-ghost" onclick="copyResumen()">
+      <i class="ti ti-copy"></i> Copiar resumen
+    </button>
+  </div>`;
+}
+
+// ─────────────────────────────────────────────
+// LÓGICA DE ITEMS
+// ─────────────────────────────────────────────
+function updItem(id, field, val, section, name) {
+  let it = state.items.find(i => i.id === id);
+  if (!it) {
+    it = { id, section, name, qty: 0, price: 0, discPct: 0, discAmt: 0, billing: 'mensual' };
+    state.items.push(it);
+  }
+  it[field] = val;
+  if (field === 'discPct' && val > 0) it.discAmt = 0;
+  renderContent();
+  renderSteps();
+  updateDocTitle();
+}
+
+// ─────────────────────────────────────────────
+// NAVEGACIÓN
+// ─────────────────────────────────────────────
+function saveDatos() {
+  ['negocio','titulo','contacto','emailContacto','telContacto'].forEach(f => {
+    const el = document.getElementById(f);
+    if (el) state.datos[f] = el.value;
+  });
+  const ant = document.getElementById('anticipo');
+  if (ant) state.datos.anticipo = parseFloat(ant.value) || 0;
+  const ejIdx = document.getElementById('ejecutivoIdx');
+  if (ejIdx) state.datos.ejecutivoIdx = ejIdx.value;
+  updateDocTitle();
+}
+
+function updateDocTitle() {
+  const d = state.datos;
+  document.getElementById('doc-title').textContent =
+    d.titulo || d.negocio || 'Nueva cotización';
+}
+
+function nextStep() {
+  if (state.step === 0) saveDatos();
+  state.step = Math.min(4, state.step + 1);
+  renderSteps();
+  renderContent();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function prevStep() {
+  state.step = Math.max(0, state.step - 1);
+  renderSteps();
+  renderContent();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─────────────────────────────────────────────
+// LLAMADA A CLAUDE VÍA PROXY NETLIFY
+// ─────────────────────────────────────────────
+async function generarCotizacion() {
+  state.generating = true;
+  state.generatedDoc = '';
+  renderContent();
+
+  const t   = totals();
+  const d   = state.datos;
+  const ej  = getEjecutivo();
+
+  const itemsText = state.items.map(it => {
+    const { disc, final } = calcItem(it);
+    return `- ${it.qty}× ${it.name} (${it.section}${it.billing ? ', ' + it.billing : ''}) | P.Lista: ${fmt(it.price)} | Desc: ${it.discPct}% (-${fmt(disc)}) | Final: ${fmt(final)}`;
+  }).join('\n');
+
+  const prompt = `Genera una cotización formal y profesional en español con estos datos:
+
+EJECUTIVO
+Nombre: ${ej ? ej.nombre : '—'}
+Email: ${ej ? ej.email : '—'}
+Tel: ${ej ? ej.tel : '—'}
+
+CLIENTE
+Negocio: ${d.negocio || '—'}
+Contacto: ${d.contacto || '—'}
+Email: ${d.emailContacto || '—'}
+Tel: ${d.telContacto || '—'}
+Título: ${d.titulo || 'Cotización sistema punto de venta'}
+
+PRODUCTOS Y SERVICIOS
+${itemsText || '(sin productos)'}
+
+RESUMEN FINANCIERO
+Inversión inicial (hardware + instalación): ${fmt(t.inv)}
+Renta mensual: ${fmt(t.renta)}
+${t.anual > 0 ? 'Cargos anuales: ' + fmt(t.anual) : ''}
+Descuentos totales: -${fmt(t.totalDesc)}
+TOTAL COTIZACIÓN: ${fmt(t.grand)}
+${d.anticipo > 0 ? 'Anticipo acordado (' + d.anticipo + '%): ' + fmt(t.grand * (d.anticipo / 100)) : ''}
+
+INSTRUCCIONES DE FORMATO
+- Encabezado con logo text "WANSOFT by Clip" y datos del ejecutivo
+- Fecha actual
+- Sección de datos del cliente
+- Tabla de productos agrupada por sección (Hardware / Licencias / Instalación)
+- Resumen de totales
+- Sección de condiciones comerciales (vigencia 30 días, forma de pago, garantía)
+- Firma del ejecutivo al pie
+- Tono profesional y cálido`;
+
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: `Eres el asistente de cotizaciones de Wansoft by Clip, empresa de software punto de venta. 
+Generas documentos de cotización formales, claros y profesionales en español.
+Políticas de descuento vigentes: ${POLITICAS}`,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    state.generatedDoc = data.content?.[0]?.text || 'Error: respuesta inesperada de la API';
+  } catch (err) {
+    state.generatedDoc = `Error al generar la cotización: ${err.message}\n\nVerifica que la variable CLAUDE_API_KEY esté configurada en Netlify.`;
+  }
+
+  state.generating = false;
+  renderContent();
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+
+// ─────────────────────────────────────────────
+// UTILIDADES DE EXPORTACIÓN
+// ─────────────────────────────────────────────
+function copyResumen() {
+  const t = totals();
+  const d = state.datos;
+  const ej = getEjecutivo();
+  const lines = [
+    `COTIZACIÓN: ${d.titulo || '—'}`,
+    `Cliente: ${d.negocio || '—'}`,
+    `Contacto: ${d.contacto || '—'} | ${d.emailContacto || '—'}`,
+    `Ejecutivo: ${ej ? ej.nombre : '—'}`,
+    '',
+    `Inversión inicial: ${fmt(t.inv)}`,
+    `Renta mensual: ${fmt(t.renta)}`,
+    t.anual > 0 ? `Cargos anuales: ${fmt(t.anual)}` : '',
+    `Descuentos: -${fmt(t.totalDesc)}`,
+    `TOTAL: ${fmt(t.grand)}`,
+    d.anticipo > 0 ? `Anticipo (${d.anticipo}%): ${fmt(t.grand * (d.anticipo / 100))}` : '',
+  ].filter(Boolean).join('\n');
+
+  navigator.clipboard?.writeText(lines)
+    .then(() => alert('✓ Resumen copiado al portapapeles'))
+    .catch(() => alert(lines));
+}
+
+function copyDoc() {
+  navigator.clipboard?.writeText(state.generatedDoc)
+    .then(() => alert('✓ Cotización copiada al portapapeles'))
+    .catch(() => alert('No se pudo copiar automáticamente'));
+}
+
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+renderSteps();
+renderContent();
+</script>
+</body>
+</html>
